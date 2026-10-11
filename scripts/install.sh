@@ -51,27 +51,51 @@ source_root="$repository_root/skills"
 skill_names=(ctf-operator ctf-writeup-custom evidence-readme)
 
 [[ -d "$source_root" ]] || { echo "error: source skills directory is missing" >&2; exit 1; }
+
+# Complete every read-only check before creating or moving anything in the
+# destination. A failed preflight therefore leaves an existing installation
+# untouched.
+for skill_name in "${skill_names[@]}"; do
+  [[ -f "$source_root/$skill_name/SKILL.md" ]] || {
+    echo "error: missing source skill: $skill_name" >&2
+    exit 1
+  }
+done
+
+if [[ -d "$destination" ]] && (( ! force )); then
+  for skill_name in "${skill_names[@]}"; do
+    if [[ -e "$destination/$skill_name" ]]; then
+      echo "error: destination already contains $destination/$skill_name; rerun with --force to preserve and replace it" >&2
+      exit 1
+    fi
+  done
+fi
+
 mkdir -p "$destination"
+staging_root="$(mktemp -d "$destination/.flag-babysitter-staging.XXXXXXXX")"
+cleanup() {
+  rm -rf "$staging_root"
+}
+trap cleanup EXIT
+
+# Copy every source skill into staging before replacing a destination skill.
+for skill_name in "${skill_names[@]}"; do
+  cp -R "$source_root/$skill_name" "$staging_root/$skill_name"
+done
 
 backup_root=""
 for skill_name in "${skill_names[@]}"; do
-  source_skill="$source_root/$skill_name"
   target_skill="$destination/$skill_name"
-  [[ -f "$source_skill/SKILL.md" ]] || { echo "error: missing source skill: $skill_name" >&2; exit 1; }
 
   if [[ -e "$target_skill" ]]; then
-    if (( ! force )); then
-      echo "error: destination already contains $target_skill; rerun with --force to preserve and replace it" >&2
-      exit 1
-    fi
     if [[ -z "$backup_root" ]]; then
-      backup_root="$destination/.flag-babysitter-backups/$(date -u +%Y%m%dT%H%M%SZ)"
+      backup_root="$destination/.flag-babysitter-backups/$(date -u +%Y%m%dT%H%M%SZ)-$$"
       mkdir -p "$backup_root"
     fi
     mv "$target_skill" "$backup_root/$skill_name"
   fi
 
-  cp -R "$source_skill" "$target_skill"
+  mv "$staging_root/$skill_name" "$target_skill"
   echo "installed: $target_skill"
 done
 

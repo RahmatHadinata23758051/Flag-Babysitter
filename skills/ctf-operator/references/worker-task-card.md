@@ -7,6 +7,7 @@ Event/lab and rules:
 Allowed scope:
 Challenge ID, title, and category:
 Workspace:
+Evidence ledger path:
 Artifacts and endpoint allowlist:
 Relevant category guidance or user template:
 Primary worker template path:
@@ -25,6 +26,7 @@ Findings and evidence:
 Reproduction steps and command:
 Candidate flag (only if evidenced):
 Files created:
+Candidate record ID in evidence ledger:
 Remaining uncertainty:
 Checkpoint/progress for long work:
 ```

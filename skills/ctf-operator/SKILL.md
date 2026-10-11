@@ -29,7 +29,7 @@ Keep original artifacts, solver code, notes, logs, and a task-owned `.work/` dir
 4. Run one isolated challenge per worker. The requested worker count may be one to three; never exceed three concurrent workers. If subagents are unavailable, process the same queue sequentially.
 5. Give workers the task card from [worker-task-card.md](references/worker-task-card.md), the selected primary template, and any selected supplemental skill. Workers receive only scoped challenge material and never receive account credentials or submission authority.
 6. Require an evidence loop: hypothesis → smallest useful experiment → observation → update or pivot. Record meaningful attempts and avoid retrying an unchanged hypothesis.
-7. Treat every worker flag as a candidate. Independently reproduce or verify it against the original artifact, challenge service, or provided verifier. Store the command and non-sensitive evidence in the challenge folder.
+7. Treat every worker flag as a candidate. Independently reproduce or verify it against the original artifact, challenge service, or provided verifier. Store the command and non-sensitive evidence in the challenge folder using an [evidence ledger](references/evidence-ledger.md).
 8. After independent verification, invoke `ctf-writeup-custom` if installed and requested. Give it verified evidence, the original challenge details, solver path, and site constraints. Do not generate a writeup from an unverified candidate.
 9. Hand verified results to the user by default. Submit only when the user explicitly authorizes that exact submission, event rules permit it, and the account/action are clear. Authorized submissions are sequential.
 10. Remove only task-owned temporary files inside that challenge's `.work/` after dependent processes have stopped. Preserve solver and verification evidence.
@@ -48,4 +48,4 @@ This skill is self-contained. Other category skills or external companion packs 
 
 ## Final handoff
 
-For each challenge, report its title/category, status (`blocked`, `candidate`, or `verified`), reproducible evidence, solver and writeup paths, remaining uncertainty, and submission status. A candidate is never reported as solved.
+For each challenge, report its title/category, status (`blocked`, `candidate`, or `verified`), reproducible evidence, solver and writeup paths, remaining uncertainty, and submission status. Use the [evidence ledger](references/evidence-ledger.md) as the handoff record. A candidate is never reported as solved.

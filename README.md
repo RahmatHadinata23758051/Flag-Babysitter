@@ -101,6 +101,7 @@ stateDiagram-v2
 
 - a [run contract](skills/ctf-operator/references/run-contract.md) for the facts that must be established before work starts;
 - a [worker task card](skills/ctf-operator/references/worker-task-card.md) that bounds each assignment and report;
+- an [evidence ledger](skills/ctf-operator/references/evidence-ledger.md) that records candidates separately from independent verification;
 - a [skill-routing guide](skills/ctf-operator/references/skill-routing.md) that selects a primary worker template and optional installed skills;
 - [portable worker templates](skills/ctf-operator/references/worker-templates/) for crypto, pwn, reverse, web, forensics, malware, OSINT/misc, AI/ML, and systems challenges;
 - [portable environment guidance](skills/ctf-operator/references/environment.md) that avoids machine-specific paths;

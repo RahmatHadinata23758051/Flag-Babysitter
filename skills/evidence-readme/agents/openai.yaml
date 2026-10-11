@@ -1,0 +1,7 @@
+interface:
+  display_name: "Evidence README"
+  short_description: "Draft audit-backed repository READMEs"
+  brand_color: "#F59E0B"
+  default_prompt: "Use $evidence-readme to audit this repository before drafting an evidence-backed README."
+policy:
+  allow_implicit_invocation: true

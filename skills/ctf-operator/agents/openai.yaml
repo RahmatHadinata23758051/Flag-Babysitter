@@ -1,0 +1,7 @@
+interface:
+  display_name: "CTF Operator"
+  short_description: "Coordinate scoped CTF work with proof gates"
+  brand_color: "#14B8A6"
+  default_prompt: "Use $ctf-operator to coordinate this authorized CTF challenge set with isolated workspaces and independent verification."
+policy:
+  allow_implicit_invocation: true

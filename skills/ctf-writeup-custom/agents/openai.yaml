@@ -1,0 +1,7 @@
+interface:
+  display_name: "CTF Writeup Author"
+  short_description: "Write reproducible verified CTF walkthroughs"
+  brand_color: "#22D3EE"
+  default_prompt: "Use $ctf-writeup-custom to write a detailed walkthrough from this independently verified CTF solve."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,19 @@
+# Illustrative configuration for an authorized CTF or training lab.
+# This file is documentation; the skills do not execute or parse it automatically.
+event:
+  name: Example Training CTF
+  workspace_root: ./workspace
+scope:
+  artifacts_only: true
+  endpoints: []
+workers:
+  requested: 2 # valid range: 1-3
+submission:
+  mode: user-controlled
+writeup:
+  enabled_after_verification: true
+  language: id
+  filename: Readme.md
+environment:
+  python_activation: null
+  sage_activation: null

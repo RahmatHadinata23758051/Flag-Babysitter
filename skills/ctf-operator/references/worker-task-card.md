@@ -9,6 +9,8 @@ Challenge ID, title, and category:
 Workspace:
 Artifacts and endpoint allowlist:
 Relevant category guidance or user template:
+Primary worker template path:
+Supplemental installed skill/reference (if any):
 Objective:
 Known hypotheses and completed attempts:
 Budget and stop condition:

@@ -141,6 +141,23 @@ def test_packager() -> None:
         )
         if invalid_output.returncode == 0:
             fail("packager accepted a non-directory output path")
+
+        mixed_output = scratch / "mixed-bundles"
+        mixed_output.mkdir()
+        existing_bundle = mixed_output / "ctf-writeup-custom.zip"
+        existing_bundle.write_bytes(b"preserve this bundle")
+        mixed = subprocess.run(
+            ["python3", "scripts/package_skills.py", "--output", str(mixed_output)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if mixed.returncode == 0:
+            fail("packager accepted a mixed existing output without --force")
+        if (mixed_output / "ctf-operator.zip").exists():
+            fail("packager created a partial output before a failed preflight")
+        if existing_bundle.read_bytes() != b"preserve this bundle":
+            fail("packager changed an existing bundle during a failed preflight")
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
 

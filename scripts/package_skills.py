@@ -73,6 +73,19 @@ def write_bundle(skill: str, output: Path, force: bool) -> Path:
     return destination
 
 
+def preflight(selected: tuple[str, ...], output: Path, force: bool) -> None:
+    """Validate every selected source and destination before creating a ZIP."""
+    for skill in selected:
+        manifest = ROOT / "skills" / skill / "SKILL.md"
+        if not manifest.is_file():
+            raise RuntimeError(f"missing skill manifest: {manifest.relative_to(ROOT)}")
+        destination = output / f"{skill}.zip"
+        if destination.exists() and not force:
+            raise RuntimeError(
+                f"refusing to replace {destination}; rerun with --force to overwrite that bundle"
+            )
+
+
 def main() -> int:
     args = parse_args()
     selected = tuple(dict.fromkeys(args.selected_skills or SKILLS))
@@ -80,6 +93,7 @@ def main() -> int:
         if args.output.exists() and not args.output.is_dir():
             raise RuntimeError(f"output path is not a directory: {args.output}")
         args.output.mkdir(parents=True, exist_ok=True)
+        preflight(selected, args.output, args.force)
         for skill in selected:
             destination = write_bundle(skill, args.output, args.force)
             print(f"packaged: {destination}")

@@ -86,6 +86,8 @@ def test_installer() -> None:
         blocked = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
         if blocked.returncode == 0:
             fail("installer replaced an existing skill without --force")
+        if not sentinel.is_file():
+            fail("installer changed an existing skill without --force")
 
         force_command = command + ["--force"]
         subprocess.run(force_command, cwd=ROOT, check=True, capture_output=True, text=True)

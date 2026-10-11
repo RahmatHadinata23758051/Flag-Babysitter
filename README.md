@@ -1,12 +1,14 @@
 # Flag Babysitter
 
+[![Validate repository](https://github.com/RahmatHadinata23758051/Flag-Babysitter/actions/workflows/validate.yml/badge.svg)](https://github.com/RahmatHadinata23758051/Flag-Babysitter/actions/workflows/validate.yml)
+
 ![Flag Babysitter banner showing three analysis lanes, a coordination bot, and a verified result](assets/flag-babysitter-hero.png)
 
 Evidence-driven Codex skills for coordinating authorized CTF work, documenting verified solves, and writing repository documentation without unsupported claims.
 
 Flag Babysitter is a source repository for three skill directories. Its core workflow is designed to keep challenge work isolated, limit concurrent workers to three, distinguish candidate flags from independently verified results, and leave submission under user control. It also includes a small offline fixture that exercises the candidate-to-verification boundary without using a live event or real competition artifact.
 
-This repository is currently a skill source tree, not an application or packaged plugin. It has no installer, release artifact, or declared software license yet.
+This repository is a skill source tree, not a standalone CTF application. It includes a tested local installer and an offline validation fixture; it does not claim an agent runtime or coverage across real CTF events.
 
 ## Contents
 
@@ -14,7 +16,7 @@ This repository is currently a skill source tree, not an application or packaged
 - [What is included](#what-is-included)
 - [How the documented workflow fits together](#how-the-documented-workflow-fits-together)
 - [Skills](#skills)
-- [Requirements and installation status](#requirements-and-installation-status)
+- [Install the skills](#install-the-skills)
 - [Quick verification](#quick-verification)
 - [Example run configuration](#example-run-configuration)
 - [Synthetic fixture](#synthetic-fixture)
@@ -22,7 +24,7 @@ This repository is currently a skill source tree, not an application or packaged
 - [Safety boundaries](#safety-boundaries)
 - [Testing](#testing)
 - [Current limitations](#current-limitations)
-- [Contributing and license](#contributing-and-license)
+- [Contributing, security, and license](#contributing-security-and-license)
 
 ## Why this repository exists
 
@@ -130,9 +132,23 @@ It does not submit flags, interact with a challenge service, or invent missing p
 
 Its [audit template](skills/evidence-readme/references/audit-report.md) records verified facts, conservative inferences, and unavailable information. This README was authored under that contract.
 
-## Requirements and installation status
+## Install the skills
 
-No installer, package manifest, or release artifact is included in this repository. As a result, there is no repository-verified installation command to publish here yet.
+The repository includes a local installer that copies the three skill directories to a destination you choose. It does not download dependencies or alter an existing skill unless `--force` is provided.
+
+```bash
+git clone https://github.com/RahmatHadinata23758051/Flag-Babysitter.git
+cd Flag-Babysitter
+bash scripts/install.sh --dest /absolute/path/to/your/codex/skills
+```
+
+If the destination already contains a same-name skill, installation stops without changing it. An explicit replacement preserves the old skill in a timestamped backup inside the destination:
+
+```bash
+bash scripts/install.sh --dest /absolute/path/to/your/codex/skills --force
+```
+
+Use the destination directory configured for your Codex installation. The installer is tested against a temporary destination by the repository validator; it is not run automatically against a user's local skill directory.
 
 The synthetic fixture test requires:
 
@@ -147,16 +163,17 @@ No third-party Python dependency is used by the fixture test. A future installat
 Run the deterministic local fixture test from the repository root:
 
 ```bash
-bash tests/validate-synthetic-fixture.sh
+python scripts/validate_repo.py
 ```
 
 Expected success output:
 
 ```text
 synthetic fixture: PASS
+repository validation: PASS
 ```
 
-This command runs a worker-side solver and an independent verifier. It does not access a network service, use credentials, install dependencies, or submit anything.
+This command checks skill metadata and local links, runs the worker-side solver and independent verifier, and tests the installer's no-overwrite and backup behavior in a task-local temporary directory. It does not access a challenge service, use credentials, install dependencies, or submit anything.
 
 ## Example run configuration
 
@@ -223,9 +240,14 @@ This fixture does not measure success on real events, network services, other ch
 │   ├── ctf-operator/                   # Authorized CTF orchestration skill
 │   ├── ctf-writeup-custom/             # Verified-solve writeup skill
 │   └── evidence-readme/                # Audit-first README authoring skill
+├── scripts/
+│   ├── install.sh                       # Explicit-destination skill installer
+│   └── validate_repo.py                 # Dependency-free repository validator
 ├── tests/
-│   └── validate-synthetic-fixture.sh   # Fixture test runner
-└── PROJECT.md                           # Local project handoff; not public docs
+│   └── validate-synthetic-fixture.sh    # Fixture test runner
+├── CONTRIBUTING.md                      # Contribution boundaries and checks
+├── LICENSE                              # MIT license for repository-owned content
+└── SECURITY.md                          # Safety and vulnerability reporting policy
 ```
 
 ## Safety boundaries
@@ -243,28 +265,27 @@ These are documented workflow constraints, not a formal security audit or a guar
 
 ## Testing
 
-The repository currently documents one executable test:
+The repository includes one dependency-free validation command:
 
 ```bash
-bash tests/validate-synthetic-fixture.sh
+python scripts/validate_repo.py
 ```
 
-It checks the expected worker candidate output, then checks independent verifier output and the expected artifact digest. The test was run while preparing this README and returned `synthetic fixture: PASS`.
+It checks skill metadata and local Markdown links, runs the expected worker candidate output and independent verifier, and validates installer safety in a temporary task-local directory. The validation command was run while preparing this README and returned `repository validation: PASS`.
 
-No build, lint, coverage, integration-test, or end-to-end agent-runtime command is present in the repository at this time.
+GitHub Actions runs this same validation on pushes and pull requests targeting `main`. No coverage, live-event integration test, or end-to-end agent-runtime test is present.
 
 ## Current limitations
 
-- This is a source tree for skill instructions, not an installable package or standalone CTF application.
-- No automatic installer has been implemented or verified.
-- The only executable validation is one small offline synthetic fixture.
+- This is a source tree for skill instructions, not a standalone CTF application.
+- Installation copies source skill directories; it does not resolve optional third-party skill packs.
+- The executable validation uses a small offline synthetic fixture.
 - No benchmark demonstrates performance on real CTF challenges, remote services, all categories, or agent runtimes.
 - The example YAML is descriptive and is not parsed by code in this repository.
-- There is no formal contribution workflow, issue tracker, changelog, or release process in the repository.
-- `PROJECT.md` is an internal handoff document and needs a privacy/publication review before publishing the repository.
+- There is no release compatibility matrix or benchmark for real CTF performance.
 
-## Contributing and license
+## Contributing, security, and license
 
-No contribution guide or license file is currently included. Do not assume reuse, redistribution, or contribution terms until the repository adds a license and documented contribution process.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. Read [SECURITY.md](SECURITY.md) for safety boundaries and responsible reporting. Repository-owned content is available under the [MIT License](LICENSE).
 
 For now, proposed changes should preserve the repository's central distinction between scoped work, candidate results, independently verified results, and user-controlled submission.

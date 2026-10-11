@@ -164,7 +164,7 @@ The synthetic fixture test requires:
 - Python 3; and
 - standard-library modules `base64`, `hashlib`, `pathlib`, and `re`.
 
-No third-party Python dependency is used by the fixture test. A future installation guide should be added only after the project provides and tests an installation mechanism for the intended Codex environment.
+No third-party Python dependency is used by the fixture test. The installer deliberately requires an explicit destination instead of assuming a global Codex path; this keeps installation scoped to the directory chosen by the user.
 
 ## Quick verification
 

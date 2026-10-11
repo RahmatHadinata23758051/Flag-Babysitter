@@ -1,0 +1,7 @@
+# Local project handoff; review separately before any public disclosure.
+PROJECT.md
+
+# Generated Python and task-local files.
+__pycache__/
+*.py[cod]
+.work/

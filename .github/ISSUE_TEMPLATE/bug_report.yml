@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible problem in a bundled skill, installer, validator, or documentation link.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, live event flags, private challenge artifacts, or targets outside an authorized scope.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - ctf-operator
+        - ctf-writeup-custom
+        - evidence-readme
+        - installer
+        - validator or fixture
+        - documentation
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the documented behavior you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and safe reproduction steps
+      description: Use synthetic or redacted inputs only.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Repository commit or release
+      placeholder: v0.1.0 or a commit SHA

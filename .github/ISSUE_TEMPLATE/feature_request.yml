@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a scoped improvement backed by a concrete workflow need.
+title: "feature: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep proposals within authorized CTFs, training labs, supplied challenge bundles, or project documentation. Do not include private event material.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Workflow problem
+      description: What repeatable problem is not covered by the existing skills or references?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Identify the likely skill, reference, fixture, or documentation area.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or safe example
+      description: Provide a synthetic, public, or redacted example when possible.

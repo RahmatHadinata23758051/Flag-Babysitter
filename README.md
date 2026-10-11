@@ -86,6 +86,10 @@ stateDiagram-v2
 
 `verified` means that a separate command, original artifact, scoped service, or supplied verifier reproduced the result. It does not mean a platform accepted a submitted flag; acceptance needs a separate platform response.
 
+![Conceptual illustration of an amber candidate artifact passing through an independent fingerprint verification gate before becoming a cyan verified result](assets/candidate-verification-concept.png)
+
+*Conceptual illustration of the documented candidate-to-verification boundary. The Mermaid state diagram and the fixture remain the authoritative workflow evidence.*
+
 ## Skills
 
 ### `ctf-operator`
@@ -103,6 +107,10 @@ The skill is written to remain useful without a third-party skill pack, a specif
 ### `ctf-writeup-custom`
 
 [`skills/ctf-writeup-custom/SKILL.md`](skills/ctf-writeup-custom/SKILL.md) is intentionally downstream of verification. It asks for evidence, solver paths, environment details, and publication constraints before writing.
+
+![Conceptual illustration of verified evidence flowing into a reproducible technical document with code, mathematics, and workflow elements](assets/evidence-to-writeup-concept.png)
+
+*Conceptual illustration of the documentation handoff. It represents the writing contract; it does not depict a runtime component or a completed challenge.*
 
 Its [style reference](skills/ctf-writeup-custom/references/style.md) supports:
 
@@ -200,7 +208,9 @@ This fixture does not measure success on real events, network services, other ch
 ```text
 .
 ├── assets/
-│   └── flag-babysitter-hero.png         # Original README hero artwork
+│   ├── candidate-verification-concept.png # Candidate-to-verification illustration
+│   ├── evidence-to-writeup-concept.png    # Evidence-to-writeup illustration
+│   └── flag-babysitter-hero.png           # Original README hero artwork
 ├── benchmarks/
 │   └── synthetic-base64-proof.md       # Evidence and limits of the fixture run
 ├── examples/

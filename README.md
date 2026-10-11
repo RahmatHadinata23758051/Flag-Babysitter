@@ -18,6 +18,7 @@ This repository is a skill source tree, not a standalone CTF application. It inc
 - [Skills](#skills)
 - [Compatibility and third-party material](#compatibility-and-third-party-material)
 - [Install the skills](#install-the-skills)
+- [Use the skills in Codex](#use-the-skills-in-codex)
 - [Quick verification](#quick-verification)
 - [Example run configuration](#example-run-configuration)
 - [Synthetic fixture](#synthetic-fixture)
@@ -165,6 +166,24 @@ The synthetic fixture test requires:
 - standard-library modules `base64`, `hashlib`, `pathlib`, and `re`.
 
 No third-party Python dependency is used by the fixture test. The installer deliberately requires an explicit destination instead of assuming a global Codex path; this keeps installation scoped to the directory chosen by the user.
+
+## Use the skills in Codex
+
+After installation, invoke a skill explicitly with its `$` name. Give it only material and endpoints authorized for the event or repository task; do not put credentials or unredacted live flags in the prompt.
+
+```text
+Use $ctf-operator to coordinate this authorized CTF challenge set. The workspace is ./workspace, the rules are attached, worker count is 2, and submission remains user-controlled.
+```
+
+```text
+Use $ctf-writeup-custom to turn this independently verified solve and its solver path into a reproducible Markdown walkthrough. Do not submit anything.
+```
+
+```text
+Use $evidence-readme to audit this repository read-only before proposing an evidence-backed README revision. Do not run the application or inspect secret files.
+```
+
+These examples are prompts, not commands executed by this repository. The skills can also be selected by the agent when their documented trigger conditions match, subject to the host environment's skill-discovery behavior.
 
 ## Quick verification
 

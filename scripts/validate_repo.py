@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 
@@ -98,11 +99,45 @@ def test_installer() -> None:
         shutil.rmtree(scratch, ignore_errors=True)
 
 
+def test_packager() -> None:
+    work_root = ROOT / ".work"
+    work_root.mkdir(exist_ok=True)
+    scratch = Path(tempfile.mkdtemp(prefix="validate-package-", dir=work_root))
+    output = scratch / "bundles"
+    try:
+        command = ["python3", "scripts/package_skills.py", "--output", str(output)]
+        subprocess.run(command, cwd=ROOT, check=True, capture_output=True, text=True)
+        initial_bundles: dict[str, bytes] = {}
+        for skill in SKILLS:
+            bundle = output / f"{skill}.zip"
+            if not bundle.is_file():
+                fail(f"packager omitted {bundle.name}")
+            initial_bundles[skill] = bundle.read_bytes()
+            with zipfile.ZipFile(bundle) as archive:
+                names = archive.namelist()
+                if f"{skill}/SKILL.md" not in names:
+                    fail(f"bundle missing manifest: {bundle.name}")
+                if any(not name.startswith(f"{skill}/") for name in names):
+                    fail(f"bundle contains an unexpected top-level path: {bundle.name}")
+
+        blocked = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+        if blocked.returncode == 0:
+            fail("packager replaced an existing bundle without --force")
+
+        subprocess.run(command + ["--force"], cwd=ROOT, check=True, capture_output=True, text=True)
+        for skill, initial_bytes in initial_bundles.items():
+            if (output / f"{skill}.zip").read_bytes() != initial_bytes:
+                fail(f"packager produced a non-deterministic bundle: {skill}.zip")
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 def main() -> None:
     validate_skill_metadata()
     validate_markdown_links()
     run_fixture()
     test_installer()
+    test_packager()
     print("repository validation: PASS")
 
 

@@ -19,6 +19,7 @@ This repository is a skill source tree, not a standalone CTF application. It inc
 - [Compatibility and third-party material](#compatibility-and-third-party-material)
 - [Host compatibility](#host-compatibility)
 - [Install the skills](#install-the-skills)
+- [Package individual skills](#package-individual-skills)
 - [Use the skills in a CLI agent](#use-the-skills-in-a-cli-agent)
 - [Quick verification](#quick-verification)
 - [Example run configuration](#example-run-configuration)
@@ -171,6 +172,22 @@ The synthetic fixture test requires:
 - standard-library modules `base64`, `hashlib`, `pathlib`, and `re`.
 
 No third-party Python dependency is used by the fixture test. The installer deliberately requires an explicit destination instead of assuming a global agent-specific path; this keeps installation scoped to the directory chosen by the user.
+
+## Package individual skills
+
+Some hosts import one skill folder or ZIP bundle at a time. Create one deterministic ZIP per skill with the standard-library packager:
+
+```bash
+python scripts/package_skills.py --output ./dist
+```
+
+This writes `ctf-operator.zip`, `ctf-writeup-custom.zip`, and `evidence-readme.zip`, each containing exactly one top-level skill directory. To create one bundle only:
+
+```bash
+python scripts/package_skills.py --output ./dist --skill ctf-operator
+```
+
+The command refuses to replace an existing bundle unless `--force` is supplied. The output directory is intentionally not committed or published as a release asset; package it locally for the host you are configuring.
 
 ## Use the skills in a CLI agent
 

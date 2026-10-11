@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -52,21 +53,33 @@ def write_bundle(skill: str, output: Path, force: bool) -> Path:
         )
 
     files = sorted(path for path in source.rglob("*") if path.is_file())
-    with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        for path in files:
-            relative = path.relative_to(source)
-            entry = zipfile.ZipInfo(f"{skill}/{relative.as_posix()}", FIXED_TIMESTAMP)
-            entry.compress_type = zipfile.ZIP_DEFLATED
-            entry.external_attr = 0o100644 << 16
-            archive.writestr(entry, path.read_bytes())
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{skill}.", suffix=".zip", dir=output
+    )
+    temporary = Path(temporary_name)
+    try:
+        with open(descriptor, "wb", closefd=True) as stream:
+            with zipfile.ZipFile(stream, "w", compression=zipfile.ZIP_STORED) as archive:
+                for path in files:
+                    relative = path.relative_to(source)
+                    entry = zipfile.ZipInfo(f"{skill}/{relative.as_posix()}", FIXED_TIMESTAMP)
+                    entry.compress_type = zipfile.ZIP_STORED
+                    entry.create_system = 3
+                    entry.external_attr = 0o100644 << 16
+                    archive.writestr(entry, path.read_bytes())
+        temporary.replace(destination)
+    finally:
+        temporary.unlink(missing_ok=True)
     return destination
 
 
 def main() -> int:
     args = parse_args()
     selected = tuple(dict.fromkeys(args.selected_skills or SKILLS))
-    args.output.mkdir(parents=True, exist_ok=True)
     try:
+        if args.output.exists() and not args.output.is_dir():
+            raise RuntimeError(f"output path is not a directory: {args.output}")
+        args.output.mkdir(parents=True, exist_ok=True)
         for skill in selected:
             destination = write_bundle(skill, args.output, args.force)
             print(f"packaged: {destination}")

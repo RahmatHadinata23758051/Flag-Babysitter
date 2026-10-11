@@ -128,6 +128,19 @@ def test_packager() -> None:
         for skill, initial_bytes in initial_bundles.items():
             if (output / f"{skill}.zip").read_bytes() != initial_bytes:
                 fail(f"packager produced a non-deterministic bundle: {skill}.zip")
+        if list(output.glob(".*.zip")):
+            fail("packager left a temporary ZIP behind")
+
+        not_a_directory = scratch / "not-a-directory"
+        not_a_directory.write_text("not a directory", encoding="utf-8")
+        invalid_output = subprocess.run(
+            ["python3", "scripts/package_skills.py", "--output", str(not_a_directory)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if invalid_output.returncode == 0:
+            fail("packager accepted a non-directory output path")
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
 

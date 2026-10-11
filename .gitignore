@@ -5,3 +5,4 @@ PROJECT.md
 __pycache__/
 *.py[cod]
 .work/
+dist/

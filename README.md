@@ -16,6 +16,7 @@ This repository is a skill source tree, not a standalone CTF application. It inc
 - [What is included](#what-is-included)
 - [How the documented workflow fits together](#how-the-documented-workflow-fits-together)
 - [Skills](#skills)
+- [Compatibility and third-party material](#compatibility-and-third-party-material)
 - [Install the skills](#install-the-skills)
 - [Quick verification](#quick-verification)
 - [Example run configuration](#example-run-configuration)
@@ -107,6 +108,12 @@ stateDiagram-v2
 - an [optional integration policy](skills/ctf-operator/references/integrations.md) for already-installed specialist skills.
 
 The skill is written to remain useful without a third-party skill pack, a specific virtual environment, or a personal challenge template.
+
+## Compatibility and third-party material
+
+Bundled templates are the fallback when a user does not already have a relevant specialist skill. A user- or event-supplied template takes priority for that event, while already-installed third-party skills can only be focused supplements. Flag Babysitter does not copy those skills into this repository or make them a dependency.
+
+See the [compatibility policy](docs/compatibility.md) for the routing order, licensing boundary, and contribution rule for external material.
 
 ### `ctf-writeup-custom`
 

@@ -1,6 +1,6 @@
 # Compatibility and third-party material
 
-Flag Babysitter is a self-contained source tree for three repository-owned Codex skills. Its bundled worker templates provide the portable fallback path; a user does not need an external skill pack for the documented workflow.
+Flag Babysitter is a self-contained source tree for three repository-owned Agent Skills. Its bundled worker templates provide the portable fallback path; a user does not need an external skill pack for the documented workflow.
 
 ## When another skill is already installed
 

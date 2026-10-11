@@ -4,11 +4,11 @@
 
 ![Flag Babysitter banner showing three analysis lanes, a coordination bot, and a verified result](assets/flag-babysitter-hero.png)
 
-Evidence-driven Codex skills for coordinating authorized CTF work, documenting verified solves, and writing repository documentation without unsupported claims.
+Evidence-driven Agent Skills for coordinating authorized CTF work, documenting verified solves, and writing repository documentation without unsupported claims.
 
-Flag Babysitter is a source repository for three skill directories. Its core workflow is designed to keep challenge work isolated, limit concurrent workers to three, distinguish candidate flags from independently verified results, and leave submission under user control. It also includes a small offline fixture that exercises the candidate-to-verification boundary without using a live event or real competition artifact.
+Flag Babysitter is a source repository for three portable skill directories built around `SKILL.md`. Its core workflow is designed to keep challenge work isolated, limit concurrent workers to three, distinguish candidate flags from independently verified results, and leave submission under user control. It also includes a small offline fixture that exercises the candidate-to-verification boundary without using a live event or real competition artifact.
 
-This repository is a skill source tree, not a standalone CTF application. It includes a tested local installer and an offline validation fixture; it does not claim an agent runtime or coverage across real CTF events.
+This repository is a skill source tree, not a standalone CTF application. It includes a tested local installer and an offline validation fixture; it does not claim a universal runtime integration or coverage across real CTF events.
 
 ## Contents
 
@@ -17,8 +17,9 @@ This repository is a skill source tree, not a standalone CTF application. It inc
 - [How the documented workflow fits together](#how-the-documented-workflow-fits-together)
 - [Skills](#skills)
 - [Compatibility and third-party material](#compatibility-and-third-party-material)
+- [Host compatibility](#host-compatibility)
 - [Install the skills](#install-the-skills)
-- [Use the skills in Codex](#use-the-skills-in-codex)
+- [Use the skills in a CLI agent](#use-the-skills-in-a-cli-agent)
 - [Quick verification](#quick-verification)
 - [Example run configuration](#example-run-configuration)
 - [Synthetic fixture](#synthetic-fixture)
@@ -117,6 +118,10 @@ Bundled templates are the fallback when a user does not already have a relevant 
 
 See the [compatibility policy](docs/compatibility.md) for the routing order, licensing boundary, and contribution rule for external material.
 
+## Host compatibility
+
+The repository follows the folder-based Agent Skills shape: each skill has a `SKILL.md` manifest and may include references, scripts, and assets. It is not tied to a single AI CLI. The [host compatibility guide](docs/host-compatibility.md) separates the directory layouts documented by vendors from behavior this repository tests locally.
+
 ### `ctf-writeup-custom`
 
 [`skills/ctf-writeup-custom/SKILL.md`](skills/ctf-writeup-custom/SKILL.md) is intentionally downstream of verification. It asks for evidence, solver paths, environment details, and publication constraints before writing.
@@ -143,21 +148,21 @@ Its [audit template](skills/evidence-readme/references/audit-report.md) records 
 
 ## Install the skills
 
-The repository includes a local installer that copies the three skill directories to a destination you choose. It does not download dependencies or alter an existing skill unless `--force` is provided.
+The repository includes a local installer that copies the three skill directories to a parent skill directory you choose. It does not download dependencies or alter an existing skill unless `--force` is provided.
 
 ```bash
 git clone https://github.com/RahmatHadinata23758051/Flag-Babysitter.git
 cd Flag-Babysitter
-bash scripts/install.sh --dest /absolute/path/to/your/codex/skills
+bash scripts/install.sh --dest /absolute/path/to/your/skills
 ```
 
 If the destination already contains a same-name skill, installation stops without changing it. An explicit replacement preserves the old skill in a timestamped backup inside the destination:
 
 ```bash
-bash scripts/install.sh --dest /absolute/path/to/your/codex/skills --force
+bash scripts/install.sh --dest /absolute/path/to/your/skills --force
 ```
 
-Use the destination directory configured for your Codex installation. The installer is tested against a temporary destination by the repository validator; it is not run automatically against a user's local skill directory.
+Choose a native skill location for your CLI agent. The installer is tested against a temporary destination by the repository validator; it is not run automatically against a user's local skill directory.
 
 The synthetic fixture test requires:
 
@@ -165,25 +170,38 @@ The synthetic fixture test requires:
 - Python 3; and
 - standard-library modules `base64`, `hashlib`, `pathlib`, and `re`.
 
-No third-party Python dependency is used by the fixture test. The installer deliberately requires an explicit destination instead of assuming a global Codex path; this keeps installation scoped to the directory chosen by the user.
+No third-party Python dependency is used by the fixture test. The installer deliberately requires an explicit destination instead of assuming a global agent-specific path; this keeps installation scoped to the directory chosen by the user.
 
-## Use the skills in Codex
+## Use the skills in a CLI agent
 
-After installation, invoke a skill explicitly with its `$` name. Give it only material and endpoints authorized for the event or repository task; do not put credentials or unredacted live flags in the prompt.
+The canonical content is each skill's `SKILL.md`; the three `agents/openai.yaml` files are optional OpenAI interface metadata. A compatible host may ignore that metadata and still use the skill instructions, references, and scripts.
+
+| CLI agent | Documented skill location or workflow | Example for this repository |
+| --- | --- | --- |
+| [Gemini CLI](https://geminicli.com/docs/cli/using-agent-skills/) | User skills: `~/.gemini/skills/` or `~/.agents/skills/`; workspace skills: `.gemini/skills/` or `.agents/skills/`. | `bash scripts/install.sh --dest .agents/skills` for a workspace install. |
+| [Cursor](https://cursor.com/docs/skills) | Discovers `.agents/skills/`, `.cursor/skills/`, and compatible Codex/Claude directories. | `bash scripts/install.sh --dest .agents/skills` for a workspace install. |
+| [Claude Code](https://code.claude.com/docs/en/skills) | Uses skills for reusable on-demand workflows; project skills use the `.claude/skills/<name>/SKILL.md` layout. | `bash scripts/install.sh --dest .claude/skills` for a workspace install. |
+| [OpenAI skill runtimes](https://developers.openai.com/api/docs/guides/tools-skills) | Discover skill directories through the host's configured capability or skill directories. | Copy the skill folders to the configured parent directory, or upload one skill folder per bundle where the host requires it. |
+
+Run the command only for the host and scope you intend to configure. The generic installer proves that it copies the complete directory structure; it does **not** prove that every version or configuration of every CLI discovers skills in the same way.
+
+Read the [host compatibility guide](docs/host-compatibility.md) before using an unlisted host or a cloud/remote worker.
+
+After installation, ask the agent to use the named skill. Give it only material and endpoints authorized for the event or repository task; do not put credentials or unredacted live flags in the prompt.
 
 ```text
-Use $ctf-operator to coordinate this authorized CTF challenge set. The workspace is ./workspace, the rules are attached, worker count is 2, and submission remains user-controlled.
+Use the ctf-operator skill to coordinate this authorized CTF challenge set. The workspace is ./workspace, the rules are attached, worker count is 2, and submission remains user-controlled.
 ```
 
 ```text
-Use $ctf-writeup-custom to turn this independently verified solve and its solver path into a reproducible Markdown walkthrough. Do not submit anything.
+Use the ctf-writeup-custom skill to turn this independently verified solve and its solver path into a reproducible Markdown walkthrough. Do not submit anything.
 ```
 
 ```text
-Use $evidence-readme to audit this repository read-only before proposing an evidence-backed README revision. Do not run the application or inspect secret files.
+Use the evidence-readme skill to audit this repository read-only before proposing an evidence-backed README revision. Do not run the application or inspect secret files.
 ```
 
-These examples are prompts, not commands executed by this repository. The skills can also be selected by the agent when their documented trigger conditions match, subject to the host environment's skill-discovery behavior.
+These examples are prompts, not commands executed by this repository. Exact UI syntax varies by host: for example, Claude Code and Cursor document slash-style skill invocation, while Gemini CLI documents skill discovery and agent activation. The skills can also be selected automatically when the host supports it and their trigger conditions match.
 
 ## Quick verification
 
@@ -259,6 +277,9 @@ This fixture does not measure success on real events, network services, other ch
 │   └── flag-babysitter-hero.png           # Original README hero artwork
 ├── benchmarks/
 │   └── synthetic-base64-proof.md       # Evidence and limits of the fixture run
+├── docs/
+│   ├── compatibility.md                 # External-skill licensing and precedence
+│   └── host-compatibility.md            # Documented CLI host layouts and limits
 ├── examples/
 │   └── run-config.yaml                 # Illustrative run fields
 ├── fixtures/
@@ -309,7 +330,8 @@ GitHub Actions runs this same validation on pushes and pull requests targeting `
 - The executable validation uses a small offline synthetic fixture.
 - No benchmark demonstrates performance on real CTF challenges, remote services, all categories, or agent runtimes.
 - The example YAML is descriptive and is not parsed by code in this repository.
-- There is no release compatibility matrix or benchmark for real CTF performance.
+- Compatibility documentation covers selected Agent Skills hosts; it is not an end-to-end test matrix for every CLI version or cloud worker.
+- There is no benchmark for real CTF performance.
 
 ## Contributing, security, and license
 

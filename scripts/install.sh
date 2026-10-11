@@ -3,12 +3,12 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: bash scripts/install.sh --dest <codex-skills-directory> [--force]
+Usage: bash scripts/install.sh --dest <skills-directory> [--force]
 
-Copies Flag Babysitter skills into a chosen Codex skills directory.
+Copies Flag Babysitter skills into a chosen Agent Skills directory.
 
 Options:
-  --dest <path>  Required destination directory for installed skills.
+  --dest <path>  Required parent directory for installed skill folders.
   --force        Preserve existing same-name skills in a timestamped backup,
                  then install this repository's versions.
   -h, --help     Show this help text.
